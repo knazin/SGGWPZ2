@@ -1,7 +1,5 @@
 ﻿@model ViewItem
 
-@*ViewLista*@
-
 @{
     ViewData["Title"] = "Create";
 }
@@ -31,9 +29,9 @@
     </div>
 </div>
 
-<div>
-    <a asp-controller="Admin" asp-action="Index" asp-route-co="@Model.Nazwa">Back to List</a>
-</div>
+
+<a asp-controller="Admin" asp-action="Index" asp-route-co="@Model.Nazwa">Back to List</a>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

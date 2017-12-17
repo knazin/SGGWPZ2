@@ -53,15 +53,15 @@ namespace SGGWPZ.Controllers
                     List<string> ListaItemowDoDodania = new List<string>(); // Konstruktor
                     List<IEnumerable<dynamic>> ListaListNazw = new List<IEnumerable<dynamic>>();
 
-                    IEnumerable<IForeignKey> foreignKeys = Db.Model.FindEntityType($"SGGWPZ.Models.{co}").GetForeignKeys();
+                    //IEnumerable<IForeignKey> foreignKeys = Db.Model.FindEntityType($"SGGWPZ.Models.{co}").GetForeignKeys();
                     //foreach (var foreignKey in foreignKeys)
                     //    ListaKluczyObcych.Add(foreignKey.PrincipalKey.ToString().Split(' ')[1].Split("PK")[0]);
 
-                    List<string> ListaKluczy = uni.PartsOfAlternativeKey(Obiekt);
-
-                    // Jezeli obiekt ma klucze obce
+                    //List<string> ListaKluczy = uni.PartsOfAlternativeKey(Obiekt);
+                    
                     foreach (var item in Obiekt.GetType().GetProperties())
                     {
+                        // Jezeli obiekt ma klucze obce
                         if (item.Name != Obiekt.GetType().GetProperties()[0].Name && item.Name.Contains("Id"))
                         {
                             string nazwa = "";
@@ -73,7 +73,12 @@ namespace SGGWPZ.Controllers
                             }
 
                             IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(nazwa));
-                            ListaListNazw.Add(lista);
+                            List<dynamic> listanazw = new List<dynamic>();
+                            foreach (var item2 in lista)
+                            {
+                                var test = item2.GetType().GetProperties()[1].Name;
+                            }
+                            ListaListNazw.Add(listanazw);
                         }
                         ListaItemowDoDodania.Add(item.Name);
                         wartosci.Add("");

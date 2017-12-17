@@ -106,7 +106,6 @@ namespace SGGWPZ.Repositories
 
         public async Task<List<T>> ReadAllTAsync<T>(T item) where T : class
         {
-            //throw new NotImplementedException();
             return await db.Set<T>().AsNoTracking().ToListAsync();
         }
 
@@ -118,16 +117,12 @@ namespace SGGWPZ.Repositories
 
         public List<T1> SortujPo<T1>(string PoCzymSortuj, T1 item) where T1 : class
         {
-            //throw new NotImplementedException();
-
             try { return ReadAllT(item).OrderBy(i => i.GetType().GetProperty(PoCzymSortuj).GetValue(i)).ToList(); }
             catch (Exception) { return ReadAllT(item); }
         }
 
         public T SprawdzCzyIstniejeWBazie<T>(T obiekt) where T : class
         {
-            //throw new NotImplementedException();
-
             List<string> listaKluczy = PartsOfPrimaryKey(obiekt);
             IEnumerable<dynamic> listaObiektowZBazy = ReadAllT(obiekt);
             bool czyZawieraTakieSameElementyKlucza;
@@ -142,9 +137,7 @@ namespace SGGWPZ.Repositories
         }
 
         public async Task<T> UpdateTAsync<T>(T updatedT) where T : class
-        {
-            //throw new NotImplementedException();
-
+        {    
             var nazwaId = PartsOfPrimaryKey(updatedT)[0];
             var orginalT = await db.Set<T>().FirstOrDefaultAsync(p => (int)p.GetType().GetProperty(nazwaId).GetValue(p) == (int)updatedT.GetType().GetProperty(nazwaId).GetValue(updatedT));
 
