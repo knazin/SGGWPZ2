@@ -7,6 +7,7 @@ namespace SGGWPZ.ViewModels
 {
     public class ViewLista
     {
+        // Cos tam
         public string Nazwa;
         //public dynamic Obiekt;
         public List<string> Naglowki;
