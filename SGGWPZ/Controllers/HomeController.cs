@@ -28,6 +28,7 @@ namespace SGGWPZ.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
+            var x = _db;
 
             return View();
         }
@@ -35,8 +36,8 @@ namespace SGGWPZ.Controllers
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
-            var o = uni.Obiekt("Grupy");
-            var obiekty = uni.ReadAllT(o);
+            //var o = uni.Obiekt("Grupy");
+            //var obiekty = uni.ReadAllT(o);
 
             return View();
         }

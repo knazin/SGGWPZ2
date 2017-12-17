@@ -34,8 +34,8 @@ namespace SGGWPZ.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Katedry>().HasKey(k => k.katedraId);
-            modelBuilder.Entity<Katedry>().HasOne(k => k.wydzialyId) ;
+            //modelBuilder.Entity<Katedry>().HasKey(k => k.katedraId);
+            //modelBuilder.Entity<Katedry>().HasOne(k => k.wydzialyId) ;
                 //.HasForeignKey()
                 //.HasConstraintName("ForeignKey_Post_Blog");
         }

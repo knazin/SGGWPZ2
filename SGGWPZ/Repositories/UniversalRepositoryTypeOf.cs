@@ -58,7 +58,6 @@ namespace SGGWPZ.Repositories
 
         public dynamic Obiekt(string nazwaTabeli) => Activator.CreateInstance(Type.GetType($"SGGWPZ.Models.{nazwaTabeli}"));
 
-
         /// <summary>
         /// Pobierz klucze alternatywne obiektu
         /// </summary>
@@ -111,20 +110,35 @@ namespace SGGWPZ.Repositories
             return await db.Set<T>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> ReadTAsync<T>(int ID, T Tiem) where T : class //bylo bez string nazwaId
+        public async Task<T> ReadTAsync<T>(int ID, T item) where T : class //bylo bez string nazwaId
         {
-            var nazwaId = PartsOfPrimaryKey(Tiem)[0];
+            var nazwaId = PartsOfPrimaryKey(item)[0];
             return await db.Set<T>().AsNoTracking().FirstOrDefaultAsync(i => (int)i.GetType().GetProperty(nazwaId).GetValue(i) == ID); // bylo Id
         }
 
-        public List<T1> SortujPo<T1>(string PoCzymSortuj, T1 Tiem) where T1 : class
+        public List<T1> SortujPo<T1>(string PoCzymSortuj, T1 item) where T1 : class
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            try { return ReadAllT(item).OrderBy(i => i.GetType().GetProperty(PoCzymSortuj).GetValue(i)).ToList(); }
+            catch (Exception) { return ReadAllT(item); }
         }
 
-        public T1 SprawdzCzyIstniejeWBazie<T1>(T1 obiekt) where T1 : class
+        public T SprawdzCzyIstniejeWBazie<T>(T obiekt) where T : class
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            List<string> listaKluczy = PartsOfPrimaryKey(obiekt);
+            IEnumerable<dynamic> listaObiektowZBazy = ReadAllT(obiekt);
+            bool czyZawieraTakieSameElementyKlucza;
+
+            foreach (var item in db.Set<T>().ToList())
+            {
+                czyZawieraTakieSameElementyKlucza = listaKluczy.All(x => item.GetType().GetProperty(x).GetValue(item).ToString() == obiekt.GetType().GetProperty(x).GetValue(obiekt).ToString());
+                if (czyZawieraTakieSameElementyKlucza) { return item; }
+            }
+
+            return null; // brak obiektu
         }
 
         public async Task<T> UpdateTAsync<T>(T updatedT) where T : class
@@ -153,9 +167,21 @@ namespace SGGWPZ.Repositories
             throw new NotImplementedException();
         }
 
-        public List<T1> WyszukajPoSymbolu<T1>(string PoCzym, string Nazwa, T1 Tiem) where T1 : class
+        public List<T> WyszukajPoSymbolu<T>(string PoCzym, string Nazwa, T item) where T : class
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            if (PoCzym == null || PoCzym == "")
+                return ReadAllT(item);
+            else
+            {
+                List<T> akcj = ReadAllT(item);
+
+                if (akcj.Where(a => (string)a.GetType().GetProperty(PoCzym).GetValue(a) == Nazwa).ToList().Count != 0)
+                    return akcj.Where(a => (string)a.GetType().GetProperty(PoCzym).GetValue(a) == Nazwa).ToList();
+                else
+                    return ReadAllT(item);
+            }
         }
     }
 }

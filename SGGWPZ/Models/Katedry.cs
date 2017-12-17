@@ -11,8 +11,8 @@ namespace SGGWPZ.Models
         [Key]
         public int katedraId { get; set; }
         public string nazwa { get; set; }
-        //public int wydzialId { get; set; }
-        public Wydzialy wydzialyId { get; set; }
+        public int wydzialId { get; set; }
+        //public Wydzialy wydzialyId { get; set; }
 
     }
 }

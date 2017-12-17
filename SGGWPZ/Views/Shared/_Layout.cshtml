@@ -41,11 +41,8 @@
                         <ul class="dropdown-menu">
                             @{
                                 foreach (var item in db.GetType().GetProperties().ToList().SkipLast(3))
-                                { <li><a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-co="@item.Name">@item.Name</a></li> }
+                                { <li><a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-co="@item.Name">@item.Name</a></li> }                               
                             }
-
-                            <li role="separator" class="divider"></li>
-                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Wprowadzenie pelnego planu</a></li>  
                         </ul>
                     </li>          
                 </ul>
