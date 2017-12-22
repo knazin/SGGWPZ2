@@ -124,12 +124,15 @@ namespace SGGWPZ.Repositories
         public T SprawdzCzyIstniejeWBazie<T>(T obiekt) where T : class
         {
             List<string> listaKluczy = PartsOfPrimaryKey(obiekt);
+            List<string> wlasciwosci = ListOfProperties(obiekt);
+            wlasciwosci.Remove(listaKluczy[0]); // Usuwamy klucz glowny - bo kazdy nowy obiekt domyslnie ma id 0
+
             IEnumerable<dynamic> listaObiektowZBazy = ReadAllT(obiekt);
             bool czyZawieraTakieSameElementyKlucza;
 
             foreach (var item in db.Set<T>().ToList())
             {
-                czyZawieraTakieSameElementyKlucza = listaKluczy.All(x => item.GetType().GetProperty(x).GetValue(item).ToString() == obiekt.GetType().GetProperty(x).GetValue(obiekt).ToString());
+                czyZawieraTakieSameElementyKlucza = wlasciwosci.All(x => item.GetType().GetProperty(x).GetValue(item).ToString() == obiekt.GetType().GetProperty(x).GetValue(obiekt).ToString());
                 if (czyZawieraTakieSameElementyKlucza) { return item; }
             }
 

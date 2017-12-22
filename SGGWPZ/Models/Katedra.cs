@@ -5,15 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGGWPZ.Models
 {
-    [Table("Typy_przedmiotu")]
-    public partial class Typy_przedmiotu
+    [Table("Katedra")]
+    public partial class Katedra
     {
         [Key]
-        public int typId { get; set; }
+        public int katedraId { get; set; }
         public string nazwa { get; set; }
-
+        public int kierunekId { get; set; }
     }
 }
-
 
     

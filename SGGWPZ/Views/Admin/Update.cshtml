@@ -6,6 +6,12 @@
 
 <h2>Edit</h2>
 
+@{
+    // Wyswietl komunikat o bledzie jesli wystapi
+    if (Model.ErrorMessage != null)
+    { <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div> }
+}
+
 <h4>@Model.Nazwa</h4>
 <hr />
 <div class="row">
@@ -13,14 +19,43 @@
         <form asp-controller="Admin" asp-action="Update" method="post">
             <input type="hidden" asp-for="@Model.Nazwa" />
             @{
+                int ktoryslownik = 0;
                 for (int i = 0; i < Model.Naglowki.Count; i++)
                 {
-                    <div class="form-group">
-                        <label class="control-label">@Model.Naglowki[i]</label>
-                        <input asp-for="@Model.Naglowki[i]" class="form-control" type="hidden" />
-                        <input asp-for="@Model.Wartosci[i]" class="form-control" />
-                        @*<span asp-validation-for="nazwisko" class="text-danger"></span>*@
-                    </div>
+                    if (i == 0)
+                    {
+                        <input type="hidden" asp-for="@Model.Naglowki[i]" />
+                        <input type="hidden" asp-for="@Model.Wartosci[i]" />
+                    }
+                    else
+                    {
+                        if (Model.Naglowki[i].Contains("Id")) // Jezeli klucz obcy
+                        {
+                            <div class="form-group">
+                                <label class="control-label">@Model.Naglowki[i]</label>
+                                <input asp-for="@Model.Naglowki[i]" class="form-control" type="hidden" />
+                                <select class="form-control" asp-for="@Model.Wartosci[i]">
+                                    @foreach (KeyValuePair<string, string> item2 in Model.ListaNazwKluczyObcych[ktoryslownik])
+                                    {
+                                        if (item2.Value == Model.Wartosci[i])
+                                        { <option selected="selected" value="@item2.Value">@item2.Key</option> }
+                                        else
+                                        { <option value="@item2.Value">@item2.Key</option> }
+                                    }
+                                </select>
+                            </div>
+                            ktoryslownik++;
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label class="control-label">@Model.Naglowki[i]</label>
+                                <input asp-for="@Model.Naglowki[i]" class="form-control" type="hidden" />
+                                <input asp-for="@Model.Wartosci[i]" class="form-control" />
+                                @*<span asp-validation-for="nazwisko" class="text-danger"></span>*@
+                            </div>
+                        }
+                    }
                 }
             }
             <button class="btn form-control" type="submit" style="min-width: 100%">Edytuj</button>

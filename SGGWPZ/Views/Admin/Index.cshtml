@@ -8,6 +8,11 @@
 
 <h2>@Model.Nazwa</h2>
 
+@{
+    // Wyswietl komunikat o bledzie jesli wystapi
+    if (Model.ErrorMessage != null) { <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div> }
+}
+
 <p>
     <a asp-action="Create" asp-route-co="@Model.Nazwa">Create New</a>
 </p>

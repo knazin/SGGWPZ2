@@ -28,7 +28,10 @@ namespace SGGWPZ
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc()
+            .AddSessionStateTempDataProvider();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
             services.AddEntityFrameworkSqlite().AddDbContext<PlanContext>();
 
             services.AddScoped<IUniversalRepositoryTypeOf, UniversalRepositoryTypeOf>();
@@ -41,6 +44,7 @@ namespace SGGWPZ
         {
             if (env.IsDevelopment())
             {
+                app.UseSession();
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }

@@ -8,11 +8,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGGWPZ.Models
 {
-    [Table("Wydzialy")]
-    public class Wydzialy
+    [Table("Rodzaj_uzytkownika")]
+    public class Rodzaj_uzytkownika
     {
         [Key]
-        public int wydzialId { get; set; }
-        public string nazwa { get; set; }
+        public int rodzajuzytkownikaId { get; set; }
+        public string rodzajuzytkownika { get; set; }
     }
 }

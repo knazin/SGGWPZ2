@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace SGGWPZ.Models
 {
-    [Table("Wykladowcy")]
-    public partial class Wykladowcy
+    [Table("Wykladowca")]
+    public partial class Wykladowca
     {
         [Key]
         public int wykladowcaId { get; set; }
