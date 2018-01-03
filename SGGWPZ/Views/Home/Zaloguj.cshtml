@@ -4,27 +4,28 @@
     ViewData["Title"] = "Zaloguj";
 }
 <h2>Logowanie</h2>
+<br>
 
 @Html.AntiForgeryToken()
-    <form class="form-horizontal" asp-controller="Home" asp-action="Zaloguj" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="@Model.login" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="@Model.login" class="form-control" />
-                <span asp-validation-for="@Model.login" class="text-danger"></span>
-            </div>
+<form class="form-horizontal" asp-controller="Home" asp-action="Zaloguj" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="@Model.login" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="@Model.login" class="form-control" style="width: 300px; height: 35px" />
+            <span asp-validation-for="@Model.login" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label asp-for="@Model.haslo" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="@Model.haslo" class="form-control" />
-                <span asp-validation-for="@Model.haslo" class="text-danger"></span>
-            </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.haslo" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="@Model.haslo" class="form-control" style="width: 300px; height: 35px"/>
+            <span asp-validation-for="@Model.haslo" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-default">Zaloguj</button>
-            </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-success">Zaloguj</button>
         </div>
-    </form>
+    </div>
+</form>

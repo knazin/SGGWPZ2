@@ -14,9 +14,9 @@
 }
 
 <p>
-    <a asp-action="Create" asp-route-co="@Model.Nazwa">Create New</a>
+    <a class="btn btn-success" asp-action="Create" asp-route-co="@Model.Nazwa">Create New</a>        
 </p>
-<table class="table">
+<table class="table table-hover">
     <thead>
         <tr>
             @{
@@ -42,9 +42,9 @@
                 }
             }
             <td>
-                <a asp-action="Update" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Update</a> |
+                <a class="btn btn-primary" asp-action="Update" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Update</a>
                 @*<a asp-action="Details" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Details</a> |*@
-                <a asp-action="Delete" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Delete</a>
+                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Delete</a>
             </td>
         </tr>
 }

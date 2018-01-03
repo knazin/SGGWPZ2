@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGGWPZ.Models
 {
-    [Table("Pz_Grupa")]
-    public partial class Pz_Grupa
+    [Table("Grupa")]
+    public partial class Grupa
     {
         [Key]
         public int grupaId { get; set; }
         public string grupy { get; set; } // Max 9 -> zapis jako liczba, np.: 168 (grupa 1 6 i 8)
-        public int rokstudiowId { get; set; }
-        public int kierunekId { get; set; }
+        //public int rokstudiowId { get; set; }
+        //public int kierunekId { get; set; }
 
         //public int wydzialId { get; set; }
         //public string rodzajstudiow { get; set; }

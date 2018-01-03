@@ -13,6 +13,7 @@ namespace SGGWPZ.Models
         public int przedmiotId { get; set; }
         public int salaId { get; set; }
         public int cyklicznoscId { get; set; }
+        public int grupaId { get; set; }
 
         // Kto/Ktora sekretarka/admin stworzyla rezerwacje
         public int uzytkownikId { get; set; }

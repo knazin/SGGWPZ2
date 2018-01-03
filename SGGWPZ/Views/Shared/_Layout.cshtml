@@ -19,6 +19,8 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
+    <style> * { font-family: 'Montserrat', sans-serif; } </style>
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -37,7 +39,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Plan zajec</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    @if (Context.Session.GetString("rodzaj_konta") == "Sekretarka") { <li><a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-co="Rezerwacje">Rezerwacja Sekretarki</a></li> }
+                    @if (Context.Session.GetString("rodzaj_konta") == "Sekretarka") { <li><a asp-area="" asp-controller="Admin" asp-action="Index" asp-route-co="Rezerwacja">Rezerwacja Sekretarki</a></li> }
                     @if (Context.Session.GetString("rodzaj_konta") == "Admin")
                     { <li class="nav-item dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Administrator<span class="caret"></span></a>
@@ -58,6 +60,8 @@
     </nav>
     <div class="container body-content">
         @RenderBody()
+
+        
         <hr />
         <footer>
             <p>&copy; 2017 - SGGWPZ</p>
@@ -86,5 +90,6 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+    
 </body>
 </html>

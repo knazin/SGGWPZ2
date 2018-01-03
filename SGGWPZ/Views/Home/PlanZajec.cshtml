@@ -1,0 +1,106 @@
+﻿@model ViewPlanZajec
+
+@{
+    ViewData["Title"] = "PlanZajec";
+    List<string> listadni = new List<string>() { "Poniedzialek", "Wtorek", "Sroda", "Czwartek", "Piatek" };
+
+    int liczbazajec = 2;
+   
+
+    DateTime dateTime = new DateTime(2017,1,1,8,0,0);
+    dateTime = dateTime.AddMinutes(15);
+    dateTime.ToShortTimeString();
+    string asd = "cp";
+}
+
+<h2 style="text-align: center;">PlanZajec</h2>
+<br />
+
+<div class="containerplan">
+    <div id="dni">
+        <div class=""></div>
+        <div class="dzien"><p>Poniedzialek</p><span class="godzina">@Model.DataTygodnia[0].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Wtorek</p> <span class="godzina">@Model.DataTygodnia[1].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Sroda</p> <span class="godzina">@Model.DataTygodnia[2].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Czwartek</p> <span class="godzina">@Model.DataTygodnia[3].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Piatek</p> <span class="godzina">@Model.DataTygodnia[4].Split(" ")[0]</span></div>
+    </div>
+
+    <div id="planzajec">
+        <div>
+            @for (DateTime dt = new DateTime(2017, 1, 1, 8, 0, 0); dt.Hour < 22; dt = dt.AddMinutes(15))
+            {
+                <div class="godzina"> @{ 
+                        if (dt.Minute == 0) { <p>@dt.Hour:00</p> }
+                        else { <p>@dt.Hour:@dt.Minute</p> } }
+                </div>
+            }
+        </div>
+        <div id="poniedzialek">
+            @for (int i = 0; i < liczbazajec; i++)
+            {
+                <div class="@asd">Cos</div>
+            }
+        </div>
+        <div id="poniedzialek">
+            @for (int i = 0; i < liczbazajec; i++)
+            {
+                <div class="@asd"><div id="trwanie">8:00-8:45</div><b>Badania operacyjne</b></div>
+            }
+        </div>
+        <div id="poniedzialek">
+            @for (int i = 0; i < liczbazajec; i++)
+            {
+                <div class="@asd"><div id="trwanie">8:00-8:45</div><b>Badania operacyjne</b></div>
+            }
+        </div>
+        <div id="poniedzialek">
+            @for (int i = 0; i < liczbazajec; i++)
+            {
+                <div class="@asd"><div id="trwanie">8:00-8:45</div><b>Badania operacyjne</b></div>
+            }
+        </div>
+        <div id="poniedzialek">
+            @foreach (var item in Model.RezerwacjeDniaDane[6])
+            {
+                if (item["nazwa"] != "Przerwa")
+                {
+                    <div role="button" class="@asd" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">
+                        <div id="trwanie" style="color:@item["tekst"]">
+                            @item["od_ktorej_godziny"]-@item["do_ktorej_godziny"] @item["rodzaj_zajec"]
+                        </div>
+                        <b>@item["nazwa"]</b>
+                    </div>
+
+                }
+                else if(item["wysokosc"] == "0px")
+                {
+
+                }
+                else if(item["wysokosc"] == "30px")
+                {
+                    <div role="button" class="@asd" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">                        
+                    </div>
+                }
+                else if (item["wysokosc"] == "60px")
+                {
+                    <div role="button" class="@asd" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">
+                        <b>@item["nazwa"]</b>
+                    </div>
+                }
+                else
+                {
+                    <div role="button" class="@asd" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">
+                        <div id="trwanie" style="color:@item["tekst"]">
+                            @item["od_ktorej_godziny"]-@item["do_ktorej_godziny"] @item["rodzaj_zajec"]
+                        </div>
+                        <b>@item["nazwa"]</b>
+                    </div>
+                }
+
+            }
+        </div>
+    </div>
+        
+</div>
+

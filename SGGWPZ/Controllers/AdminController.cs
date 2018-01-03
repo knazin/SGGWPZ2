@@ -35,7 +35,7 @@ namespace SGGWPZ.Controllers
 
         public IActionResult Index(string co)
         {
-            if (HttpContext.Session.GetString("rodzaj_konta") == "Admin" || HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && co == "Rezerwacje")
+            if (HttpContext.Session.GetString("rodzaj_konta") == "Admin" || HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && co == "Rezerwacja")
             {
                 Obiekt = uni.Obiekt(co);
 
@@ -63,7 +63,7 @@ namespace SGGWPZ.Controllers
             if (ModelState.IsValid &&
                 HttpContext.Session.GetString("rodzaj_konta") == "Admin" || 
                 HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" 
-                && co == "Rezerwacje")
+                && co == "Rezerwacja")
             {
                 ViewItem viewItem = new ViewItem();
                 viewItem.Nazwa = co;
@@ -92,7 +92,7 @@ namespace SGGWPZ.Controllers
 
                             IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(nazwa));
                             Dictionary<string, string> listanazw = new Dictionary<string, string>();
-                            if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && nazwa == "Uzytkownicy")
+                            if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && nazwa == "Uzytkownik")
                             {
                                 //List<dynamic> lista2 = lista.ToList();
                                 var kto = lista.ToList().FirstOrDefault(u => u.login == HttpContext.Session.GetString("login"));
@@ -171,7 +171,12 @@ namespace SGGWPZ.Controllers
 
                     await uni.CreateTAsync(Obiekt);
 
-                    return View("Index", new ViewLista(item.Naglowki, uni.ReadAllT(Obiekt), item.Nazwa));
+                    IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(item.Nazwa));
+                    List<dynamic> lista2 = lista.ToList();
+                    if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka") // Jezeli zalogowala sie sekretarka to wybieramy tylko jej rezerwacje
+                    { lista2 = lista2.FindAll(r => r.GetType().GetProperty("uzytkownikId").GetValue(r) == Convert.ToInt32(HttpContext.Session.GetString("uzytkownikId"))); }
+
+                    return View("Index", new ViewLista(item.Naglowki, lista2, item.Nazwa));
                 }
                 catch (Exception ex)
                 {
@@ -192,7 +197,7 @@ namespace SGGWPZ.Controllers
             if (ModelState.IsValid &&
                 HttpContext.Session.GetString("rodzaj_konta") == "Admin" ||
                 HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka"
-                && co == "Rezerwacje")
+                && co == "Rezerwacja")
             {
                 try
                 {
@@ -227,7 +232,7 @@ namespace SGGWPZ.Controllers
 
                             IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(nazwa));
                             Dictionary<string, string> listanazw = new Dictionary<string, string>();
-                            if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && nazwa == "Uzytkownicy")
+                            if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && nazwa == "Uzytkownik")
                             {
                                 //List<dynamic> lista2 = lista.ToList();
                                 var kto = lista.ToList().FirstOrDefault(u => u.login == HttpContext.Session.GetString("login"));
@@ -313,7 +318,12 @@ namespace SGGWPZ.Controllers
 
                     await uni.UpdateTAsync(Obiekt);
 
-                    return View("Index", new ViewLista(item.Naglowki, uni.ReadAllT(Obiekt), item.Nazwa));
+                    IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(item.Nazwa));
+                    List<dynamic> lista2 = lista.ToList();
+                    if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka") // Jezeli zalogowala sie sekretarka to wybieramy tylko jej rezerwacje
+                    { lista2 = lista2.FindAll(r => r.GetType().GetProperty("uzytkownikId").GetValue(r) == Convert.ToInt32(HttpContext.Session.GetString("uzytkownikId"))); }
+
+                    return View("Index", new ViewLista(item.Naglowki, lista2, item.Nazwa));
                 }
                 catch (Exception ex)
                 {

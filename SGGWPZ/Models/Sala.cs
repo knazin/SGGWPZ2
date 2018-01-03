@@ -9,6 +9,7 @@ namespace SGGWPZ.Models
     {
         [Key]
         public int salaId { get; set; }
+        public string skrot_informacji { get; set; }
         public string nr_sali { get; set; }
         public string budynek { get; set; }
     }

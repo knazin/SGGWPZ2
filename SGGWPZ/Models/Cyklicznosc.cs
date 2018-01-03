@@ -9,6 +9,7 @@ namespace SGGWPZ.Models
     {
         [Key]
         public int cyklicznoscId { get; set; }
+        public string skrot_cyklu { get; set; }
         public string od_ktorej_godziny { get; set; }
         public string od_ktorego_dnia { get; set; }
         public string do_ktorego_dnia { get; set; }

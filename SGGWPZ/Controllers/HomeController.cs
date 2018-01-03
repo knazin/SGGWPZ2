@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SGGWPZ.Models;
 using SGGWPZ.Repositories;
+using SGGWPZ.ViewModels;
 
 namespace SGGWPZ.Controllers
 {
@@ -23,7 +25,32 @@ namespace SGGWPZ.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            ViewPlanZajec vPZ = new ViewPlanZajec();
+            vPZ.kierunek = "Informatyka";
+            vPZ.semestr_studiow = "1";
+            vPZ.grupa = "1";
+            try { vPZ.ZnajdzRezerwacje(uni); }
+            catch (Exception ex) { }
+            
+            vPZ.PodzielRezerwacje(uni);
+            vPZ.Uzupelanieniedanych(uni);
+
+            var test = vPZ.Rezerwacje;
+            return View(vPZ);
+        }
+
+        [HttpPost]
+        public IActionResult Index(ViewPlanZajec viewPlanZajec)
+        {
+            try { viewPlanZajec.ZnajdzRezerwacje(uni); }
+            catch (Exception ex) { viewPlanZajec.Rezerwacje = new List<Rezerwacja>(); }
+
+            viewPlanZajec.PodzielRezerwacje(uni);
+            viewPlanZajec.Uzupelanieniedanych(uni);
+
+            var test = viewPlanZajec.Rezerwacje;
+
+            return View(viewPlanZajec);
         }
 
         public IActionResult About()
