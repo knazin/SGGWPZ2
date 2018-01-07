@@ -20,6 +20,25 @@ namespace SGGWPZ
             using (var client = new PlanContext())
             {
                 client.Database.EnsureCreated();
+
+                
+                try
+                {
+                    Rodzaj_uzytkownika rodzaj_Uzytkownika = new Rodzaj_uzytkownika();
+                    rodzaj_Uzytkownika.rodzajuzytkownikaId = 1;
+                    rodzaj_Uzytkownika.rodzajuzytkownika = "Admin";
+                    client.Rodzaj_uzytkownika.Add(rodzaj_Uzytkownika);
+                    client.SaveChanges();
+
+                    Uzytkownik uzytkownik = new Uzytkownik();
+                    uzytkownik.rodzajuzytkownikaId = 1;
+                    uzytkownik.login = "admin";
+                    uzytkownik.haslo = "1234";
+                    uzytkownik.rodzajuzytkownikaId = 1;
+                    client.Uzytkownik.Add(uzytkownik);
+                    client.SaveChanges();
+                }
+                catch (Exception) { }
             }
         }
 

@@ -14,6 +14,7 @@ namespace SGGWPZ.Models
         public string od_ktorego_dnia { get; set; }
         public string do_ktorego_dnia { get; set; }
         public string co_ile_tygodni { get; set; }
+        public string dzien_tygodnia { get; set; }
     }
 }
     

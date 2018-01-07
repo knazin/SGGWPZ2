@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SGGWPZ.Models;
+using System.Globalization;
+using SGGWPZ.ViewModels;
 
 namespace SGGWPZ.Repositories
 {
@@ -19,9 +21,9 @@ namespace SGGWPZ.Repositories
 
         public async Task<T> CreateTAsync<T>(T newT) where T : class
         {
-            await db.Set<T>().AddAsync(newT);     
+            await db.Set<T>().AddAsync(newT);
             await db.SaveChangesAsync();
-
+           
             return newT;
         }
 

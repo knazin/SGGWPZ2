@@ -23,6 +23,7 @@ namespace SGGWPZ.Models
 
         public DbSet<Przedmiot> Przedmiot { get; set; }
         public DbSet<Grupa> Grupa { get; set; }
+        public DbSet<Wolne> Wolne { get; set; }
         //public DbSet<Pz_Czas_trwania> Pz_Czas_trwania { get; set; }
         //public DbSet<Grupa> Pz_Grupa { get; set; }
         //public DbSet<Pz_Rodzaj_przedmiotu> Pz_Rodzaj_przedmiotu { get; set; }

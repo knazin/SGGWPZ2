@@ -10,6 +10,7 @@
         <div class="container-fluid">
             <div class="navbar-collapse collapse">
                 <form asp-controller="Home" asp-action="Index" method="post">
+                    <input type="hidden" asp-for="@Model.datetime"/>
                     <ul class="nav navbar-nav">
                         <li class="" style="padding-top:1.5em ; padding-bottom:1em; padding-right:1em">
                             Plan zajec dla:
@@ -64,7 +65,16 @@
     </nav>
 </div>
 
-@Html.Partial("/Views/Home/PlanZajec.cshtml", Model)
+@if (Model.grupa == "A" || Model.grupa == "B")
+{
+    @Html.Partial("/Views/Home/PlanZajecN.cshtml", Model)
+}
+else
+{
+    @Html.Partial("/Views/Home/PlanZajec.cshtml", Model)
+}
+
+
 
 
 @*<div class="row">

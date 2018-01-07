@@ -8,13 +8,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGGWPZ.Models
 {
-    [Table("Dzien_wolny")]
-    public class Dzien_wolny
+    [Table("Wolne")]
+    public class Wolne
     {
-        public int dzienwolnyId { get; set; }
+        [Key]
+        public int wolny_dzienId { get; set; }
         public string powod_wolnego { get; set; }
-        public string od_ktorego_dnia { get; set; }
-        public string do_ktorego_dnia { get; set; }
+        public string wolne_od_ktorego_dnia { get; set; }
+        public string wolne_do_ktorego_dnia { get; set; }
 
     }
 }

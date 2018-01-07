@@ -29,24 +29,33 @@ namespace SGGWPZ.Controllers
             vPZ.kierunek = "Informatyka";
             vPZ.semestr_studiow = "1";
             vPZ.grupa = "1";
+            vPZ.datetime = DateTime.Now;
+
             try { vPZ.ZnajdzRezerwacje(uni); }
             catch (Exception ex) { }
             
             vPZ.PodzielRezerwacje(uni);
             vPZ.Uzupelanieniedanych(uni);
+            vPZ.SprawdzDniWolne(uni);
 
             var test = vPZ.Rezerwacje;
             return View(vPZ);
         }
 
         [HttpPost]
-        public IActionResult Index(ViewPlanZajec viewPlanZajec)
+        public IActionResult Index(ViewPlanZajec viewPlanZajec, int ile, string dt)
         {
+            // Przesuniecie daty
+            if (dt != null){ viewPlanZajec.datetime = Convert.ToDateTime(dt).AddDays(ile); }
+            else           { viewPlanZajec.datetime = viewPlanZajec.datetime.AddDays(ile); }
+            viewPlanZajec.datetimestring = viewPlanZajec.datetime.ToString();
+
             try { viewPlanZajec.ZnajdzRezerwacje(uni); }
             catch (Exception ex) { viewPlanZajec.Rezerwacje = new List<Rezerwacja>(); }
 
             viewPlanZajec.PodzielRezerwacje(uni);
             viewPlanZajec.Uzupelanieniedanych(uni);
+            viewPlanZajec.SprawdzDniWolne(uni);
 
             var test = viewPlanZajec.Rezerwacje;
 
@@ -88,12 +97,15 @@ namespace SGGWPZ.Controllers
                 var rk = await uni.ReadTAsync(konto.rodzajuzytkownikaId, uni.Obiekt("Rodzaj_uzytkownika"));
                 string rodzkonta = rk.GetType().GetProperty("rodzajuzytkownika").GetValue(rk);
                 HttpContext.Session.SetString("rodzaj_konta", rodzkonta);
+
+                return RedirectToAction("Index");
             }
             else
             {
                 ModelState.AddModelError("", "Podane dane do logowania są niepoprawne!");
             }
-            return RedirectToAction("Index");
+            
+            return View();
         }
 
         public ActionResult Wyloguj()

@@ -10,7 +10,7 @@ namespace SGGWPZ.Models
     {
         [Key]
         public int katedraId { get; set; }
-        public string nazwa { get; set; }
+        public string nazwa_katedry { get; set; }
         public int kierunekId { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace SGGWPZ.Models
     {
         [Key]
         public int kierunekId { get; set; }
-        public string nazwa { get; set; }
+        public string nazwa_kierunku { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace SGGWPZ.Models
     {
         [Key]
         public int przedmiotId { get; set; }
+        public string skrot_przedmiotu { get; set; }
         public string nazwa { get; set; }
         public string skrot { get; set; }
         public int wykladowcaId { get; set; }

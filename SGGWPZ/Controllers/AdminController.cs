@@ -8,6 +8,7 @@ using SGGWPZ.Repositories;
 using SGGWPZ.Models;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SGGWPZ.ViewModels;
+using System.Globalization;
 
 namespace SGGWPZ.Controllers
 {
@@ -169,10 +170,32 @@ namespace SGGWPZ.Controllers
                     if (uni.SprawdzCzyIstniejeWBazie(Obiekt) != null)
                     { throw new Exception("Taki obiekt istnieje juz w bazie"); }
 
-                    await uni.CreateTAsync(Obiekt);
 
+                    // Jezeli obiekt jest rezerwacja to sprawdz czy wystapi konflikt
+                    if (item.Nazwa == "Rezerwacja")
+                    {
+                        if (CzyKonfliktRezerwacji(Obiekt))
+                        {
+                            if (WykladowcaZajety(Obiekt))
+                            {
+                                if(SalaZajeta(Obiekt))
+                                { await uni.CreateTAsync(Obiekt); }
+                                else { throw new Exception("Sala jest juz zajeta przez inna rezerwacje w tym samym czasie"); }
+                            }
+                            else { throw new Exception("Wykladowca nie moze prowadzic dwoch zajec jednoczesnie"); }
+                        }
+                        else { throw new Exception("Rezerwacja zachodzi czasowo na inna rezerwacje"); }
+                    }
+
+                    // Jezeli obiekt nie jest rezerwacja 
+                    if(item.Nazwa != "Rezerwacja")
+                    { await uni.CreateTAsync(Obiekt); }
+                    
+
+                    // Pola potrzebne do wyswietlenia listy
                     IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(item.Nazwa));
                     List<dynamic> lista2 = lista.ToList();
+
                     if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka") // Jezeli zalogowala sie sekretarka to wybieramy tylko jej rezerwacje
                     { lista2 = lista2.FindAll(r => r.GetType().GetProperty("uzytkownikId").GetValue(r) == Convert.ToInt32(HttpContext.Session.GetString("uzytkownikId"))); }
 
@@ -316,7 +339,26 @@ namespace SGGWPZ.Controllers
                     if (uni.SprawdzCzyIstniejeWBazie(Obiekt) != null)
                     { throw new Exception("Taki obiekt istnieje juz w bazie"); }
 
-                    await uni.UpdateTAsync(Obiekt);
+
+                    // Jezeli obiekt jest rezerwacja to sprawdz czy wystapi konflikt
+                    if (item.Nazwa == "Rezerwacja")
+                    {
+                        if (CzyKonfliktRezerwacji(Obiekt))
+                        {
+                            if (WykladowcaZajety(Obiekt))
+                            {
+                                if (SalaZajeta(Obiekt))
+                                { await uni.UpdateTAsync(Obiekt); }
+                                else { throw new Exception("Sala jest juz zajeta przez inna rezerwacje w tym samym czasie"); }
+                            }
+                            else { throw new Exception("Wykladowca nie moze prowadzic dwoch zajec jednoczesnie"); }
+                        }
+                        else { throw new Exception("Rezerwacja zachodzi czasowo na inna rezerwacje"); }
+                    }
+
+                    // Jezeli obiekt nie jest rezerwacja 
+                    if (item.Nazwa != "Rezerwacja")
+                    { await uni.UpdateTAsync(Obiekt); }
 
                     IEnumerable<dynamic> lista = uni.ReadAllT(uni.Obiekt(item.Nazwa));
                     List<dynamic> lista2 = lista.ToList();
@@ -405,6 +447,109 @@ namespace SGGWPZ.Controllers
             return ListaListNazw;
         }
 
+        public bool CzyKonfliktRezerwacji(Rezerwacja rezerwacja)
+        {
+            Przedmiot przedmiot = Db.Przedmiot.FirstOrDefault(p => p.przedmiotId == rezerwacja.przedmiotId);
+            Kierunek kierunek = Db.Kierunek.FirstOrDefault(k => k.kierunekId == przedmiot.kierunekId);
+            Grupa grupa = Db.Grupa.FirstOrDefault(g => g.grupaId == rezerwacja.grupaId);
+            Cyklicznosc cyklicznosc = Db.Cyklicznosc.FirstOrDefault(c => c.cyklicznoscId == rezerwacja.cyklicznoscId);
+
+            CultureInfo culture = new CultureInfo("pt-BR"); // dzien/miesiac/rok
+
+            ViewPlanZajec view = new ViewPlanZajec(kierunek.nazwa_kierunku, przedmiot.semestr_studiow, grupa.grupy);
+            view.ZnajdzRezerwacje(uni);
+            view.PodzielRezerwacje(uni);
+            view.Uzupelanieniedanych(uni);
+
+            int dzientygodnia = (int)Convert.ToDateTime(cyklicznosc.od_ktorego_dnia, culture).DayOfWeek;
+            // Niedziela jako ostatni dzien tygodnia (a nie 1) + inne dni przesuwane
+            if(dzientygodnia == 0) { dzientygodnia = 6; }
+            else { dzientygodnia--; }
+
+            foreach (Dictionary<string,string> danerezerwacji in view.RezerwacjeDniaDane[dzientygodnia])
+            {
+                if(danerezerwacji["nazwa"] != "Przerwa") // jezeli blok nie jest przerwa
+                {
+                    var test = (Convert.ToDateTime(cyklicznosc.od_ktorej_godziny) - Convert.ToDateTime(danerezerwacji["od_ktorej_godziny"])).TotalMinutes;
+                    var test2 = (Convert.ToDateTime(danerezerwacji["od_ktorej_godziny"]) - Convert.ToDateTime(cyklicznosc.od_ktorej_godziny)).TotalMinutes;
+                    if ( 
+                        (Convert.ToDateTime(cyklicznosc.od_ktorej_godziny) - Convert.ToDateTime(danerezerwacji["od_ktorej_godziny"])).TotalMinutes < Convert.ToInt32(danerezerwacji["czas_trwania"]) && // Jezeli nowa rezerwacja pozniej niz istniejaca
+                        (Convert.ToDateTime(danerezerwacji["od_ktorej_godziny"]) - Convert.ToDateTime(cyklicznosc.od_ktorej_godziny)).TotalMinutes < Convert.ToInt32(przedmiot.czas_trwania) // Jezeli nowa rezerwacja wczesniej niz istniejaca
+                        )
+                    { return false; }                    
+                }
+            }           
+            return true;  
+        }
+
+        public bool WykladowcaZajety(Rezerwacja rezerwacja)
+        {
+            // Informacje danej Rezerwacji
+            Przedmiot przedmiotR = Db.Przedmiot.FirstOrDefault(p => p.przedmiotId == rezerwacja.przedmiotId);
+            Cyklicznosc cyklicznoscR = Db.Cyklicznosc.FirstOrDefault(c => c.cyklicznoscId == rezerwacja.cyklicznoscId);
+
+            // Przedmioty prowadzone przez wykladowce
+            List<Przedmiot> listaPrzedmiotow = uni.ReadAllT(new Przedmiot()).Where(p => p.wykladowcaId == przedmiotR.wykladowcaId).ToList();
+            // Wszystkie cykle w dniu nowej rezerwacji 
+            List<Cyklicznosc> listaCyklicznosci = uni.ReadAllT(new Cyklicznosc()).Where(c => c.od_ktorego_dnia == cyklicznoscR.od_ktorego_dnia).ToList();
+            // Lista rezerwacji dla wykladowcy
+            List<Rezerwacja> listaRezerwacji = uni.ReadAllT(new Rezerwacja()).Where(
+                r => listaCyklicznosci.Any(c => c.cyklicznoscId == r.cyklicznoscId) &&
+                listaPrzedmiotow.Any(p => p.przedmiotId == r.przedmiotId)
+                ).ToList();
+
+            foreach (var rezer in listaRezerwacji)
+            {
+                // Info pojedynczej rezerwacji z listy
+                Przedmiot przed = uni.ReadAllT(new Przedmiot()).FirstOrDefault(p => p.przedmiotId == rezer.przedmiotId);
+                Cyklicznosc cykl = uni.ReadAllT(new Cyklicznosc()).FirstOrDefault(c => c.cyklicznoscId == rezer.cyklicznoscId);
+
+                var poczR = Convert.ToDateTime(cykl.od_ktorej_godziny);
+                var konR = Convert.ToDateTime(cykl.od_ktorej_godziny).AddMinutes(przed.czas_trwania);
+                var poczNR = Convert.ToDateTime(cyklicznoscR.od_ktorej_godziny);
+                var konNR = Convert.ToDateTime(cyklicznoscR.od_ktorej_godziny).AddMinutes(przedmiotR.czas_trwania);
+
+                // Assuming you know d2 > d1
+                // bylo if (poczNR.Ticks >= poczR.Ticks && poczNR.Ticks <= konR.Ticks-1 || konNR.Ticks >= poczR.Ticks && konNR.Ticks <= konR.Ticks - 1)
+                if ((poczNR.Ticks >= poczR.Ticks && poczNR.Ticks <= konR.Ticks-1) || (konNR.Ticks >= poczR.Ticks && konNR.Ticks <= konR.Ticks - 1))
+                { return false; }
+            }
+            return true;
+        }
+
+        public bool SalaZajeta(Rezerwacja rezerwacja)
+        {
+            // Informacje danej Rezerwacji
+            Przedmiot przedmiotR = Db.Przedmiot.FirstOrDefault(p => p.przedmiotId == rezerwacja.przedmiotId);
+            Sala sala = Db.Sala.FirstOrDefault(s => s.salaId == rezerwacja.salaId);
+            Cyklicznosc cyklicznoscR = Db.Cyklicznosc.FirstOrDefault(c => c.cyklicznoscId == rezerwacja.cyklicznoscId);
+
+            // Przedmioty prowadzone przez wykladowce
+            List<Sala> listaSal = uni.ReadAllT(new Sala()).Where(s => s.salaId == sala.salaId).ToList();
+            // Wszystkie cykle w dniu nowej rezerwacji 
+            List<Cyklicznosc> listaCyklicznosci = uni.ReadAllT(new Cyklicznosc()).Where(c => c.od_ktorego_dnia == cyklicznoscR.od_ktorego_dnia).ToList();
+            // Lista rezerwacji dla wykladowcy
+            List<Rezerwacja> listaRezerwacji = uni.ReadAllT(new Rezerwacja()).Where(
+                r => listaCyklicznosci.Any(c => c.cyklicznoscId == r.cyklicznoscId) &&
+                listaSal.Any(s => s.salaId == r.salaId)
+                ).ToList();
+
+            foreach (var rezer in listaRezerwacji)
+            {
+                // Info pojedynczej rezerwacji z listy
+                Przedmiot przed = uni.ReadAllT(new Przedmiot()).FirstOrDefault(p => p.przedmiotId == rezer.przedmiotId);
+                Cyklicznosc cykl = uni.ReadAllT(new Cyklicznosc()).FirstOrDefault(c => c.cyklicznoscId == rezer.cyklicznoscId);
+
+                var poczR = Convert.ToDateTime(cykl.od_ktorej_godziny);
+                var konR = Convert.ToDateTime(cykl.od_ktorej_godziny).AddMinutes(przed.czas_trwania);
+                var poczNR = Convert.ToDateTime(cyklicznoscR.od_ktorej_godziny);
+                var konNR = Convert.ToDateTime(cyklicznoscR.od_ktorej_godziny).AddMinutes(przedmiotR.czas_trwania);
+
+                if (poczNR.Ticks >= poczR.Ticks && poczNR.Ticks <= konR.Ticks - 1 || konNR.Ticks >= poczR.Ticks && konNR.Ticks <= konR.Ticks - 1)
+                { return false; }
+            }
+            return true;
+        }
         
     }
 }

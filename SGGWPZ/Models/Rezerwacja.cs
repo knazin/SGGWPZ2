@@ -9,7 +9,7 @@ namespace SGGWPZ.Models
     {
         [Key]
         public int rezerwacjaId { get; set; }
-        public string data { get; set; }
+        public string skrot_rezerwacji { get; set; }
         public int przedmiotId { get; set; }
         public int salaId { get; set; }
         public int cyklicznoscId { get; set; }

@@ -5,7 +5,7 @@
     //List<string> listadni = new List<string>() { "Poniedzialek", "Wtorek", "Sroda", "Czwartek", "Piatek" };
 
     //int liczbazajec = 2;
-    List<List<Dictionary<string, string>>> RezerwacjeDniaDanePnPt = Model.RezerwacjeDniaDane.SkipLast(2).ToList();
+    List<List<Dictionary<string, string>>> RezerwacjeDniaDanePnPt = Model.RezerwacjeDniaDane.Skip(4).ToList();
 
     string asd = "cp";
 }
@@ -14,26 +14,24 @@
 <br />
 
 <div class="containerplan">
-    <div id="dni">
+    <div id="dniN">
         <div class="">
             <form asp-controller="Home" asp-action="Index" method="post">
-                <input type="hidden" asp-for="@Model.kierunek"/>
+                <input type="hidden" asp-for="@Model.kierunek" />
                 <input type="hidden" asp-for="@Model.semestr_studiow" />
                 <input type="hidden" asp-for="@Model.grupa" />
                 <input type="hidden" asp-for="@Model.datetime" />
                 <input type="hidden" asp-for="@Model.datetimestring" />
-                <input style="width: 70px; margin-bottom: 4px;" type="submit" class="btn btn-default" value=">" asp-route-ile="7" asp-route-dt="@Model.datetimestring"/>
-                <input style="width: 70px;" type="submit" class="btn btn-default" value="<" asp-route-ile="-7" asp-route-dt="@Model.datetimestring"/>
+                <input style="width: 70px; margin-bottom: 4px;" type="submit" class="btn btn-default" value=">" asp-route-ile="7" asp-route-dt="@Model.datetimestring" />
+                <input style="width: 70px;" type="submit" class="btn btn-default" value="<" asp-route-ile="-7" asp-route-dt="@Model.datetimestring" />
             </form>
         </div>
-        <div class="dzien"><p>Poniedzialek</p><span class="godzina">@Model.DataTygodnia[0].Split(" ")[0]</span></div>
-        <div class="dzien"><p>Wtorek</p> <span class="godzina">@Model.DataTygodnia[1].Split(" ")[0]</span></div>
-        <div class="dzien"><p>Sroda</p> <span class="godzina">@Model.DataTygodnia[2].Split(" ")[0]</span></div>
-        <div class="dzien"><p>Czwartek</p> <span class="godzina">@Model.DataTygodnia[3].Split(" ")[0]</span></div>
         <div class="dzien"><p>Piatek</p> <span class="godzina">@Model.DataTygodnia[4].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Sobota</p> <span class="godzina">@Model.DataTygodnia[5].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Niedziela</p> <span class="godzina">@Model.DataTygodnia[6].Split(" ")[0]</span></div>
     </div>
 
-    <div id="planzajec">
+    <div id="planzajecN">
         <div>
             @for (DateTime dt = new DateTime(2017, 1, 1, 8, 0, 0); dt.Hour < 22; dt = dt.AddMinutes(15))
             {
