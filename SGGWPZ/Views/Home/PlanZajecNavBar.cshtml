@@ -1,0 +1,61 @@
+﻿@model ViewPlanZajec
+
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-collapse collapse">
+                <form asp-controller="Home" asp-action="Index" method="post">
+                    <input type="hidden" asp-for="@Model.datetime" />
+                    <ul class="nav navbar-nav">
+                        <li class="" style="padding-top:1.5em ; padding-bottom:1em; padding-right:1em">
+                            Plan zajec dla:
+                        </li>
+                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
+                            <select class="form-control" asp-for="@Model.kierunek">
+                                <option value="#">Wybierz kierunek</option>
+                                <option value="Informatyka" selected="selected">Informatyka</option>
+                                <option value="Informatyka i Ekonometria">Informatyka i Ekonometria</option>
+                            </select>
+                        </li>
+                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
+                            <select class="form-control" asp-for="@Model.semestr_studiow">
+                                <option value="#">Ktory semestr studiow</option>
+                                <option value="1" selected="selected">Semestr 1</option>
+                                <option value="2">Semestr 2</option>
+                                <option value="3">Semestr 3</option>
+                                <option value="4">Semestr 4</option>
+                                <option value="5">Semestr 5</option>
+                                <option value="6">Semestr 6</option>
+                                <option value="7">Semestr 7</option>
+                                <option value="8">Semestr 8</option>
+                                <option value="9">Semestr 9</option>
+                                <option value="10">Semestr 10</option>
+                            </select>
+                        </li>
+                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
+                            <select class="form-control" asp-for="@Model.grupa">
+                                <option value="#">Ktora grupa</option>
+                                <option value="1" selected="selected">Grupa 1</option>
+                                <option value="2">Grupa 2</option>
+                                <option value="3">Grupa 3</option>
+                                <option value="4">Grupa 4</option>
+                                <option value="5">Grupa 5</option>
+                                <option value="6">Grupa 6</option>
+                                <option value="7">Grupa 7</option>
+                                <option value="8">Grupa 8</option>
+                                <option value="9">Grupa 9</option>
+                                <option value="A">Turnus A</option>
+                                <option value="B">Turnus B</option>
+                            </select>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="padding-top:1em; padding-right:1em">
+                            <button class="buttonzaladuj">Zaladuj</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </nav>
+</div>

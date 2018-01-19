@@ -5,66 +5,7 @@
 }
 
 @*Navbar do ladowania planu zajec*@
-<div class="container">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-collapse collapse">
-                <form asp-controller="Home" asp-action="Index" method="post">
-                    <input type="hidden" asp-for="@Model.datetime"/>
-                    <ul class="nav navbar-nav">
-                        <li class="" style="padding-top:1.5em ; padding-bottom:1em; padding-right:1em">
-                            Plan zajec dla:
-                        </li>
-                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
-                            <select class="form-control" asp-for="@Model.kierunek">
-                                <option value="#">Wybierz kierunek</option>
-                                <option value="Informatyka" selected="selected">Informatyka</option>
-                                <option value="Informatyka i Ekonometria">Informatyka i Ekonometria</option>
-                            </select>
-                        </li>
-                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
-                            <select class="form-control" asp-for="@Model.semestr_studiow">
-                                <option value="#">Ktory semestr studiow</option>
-                                <option value="1" selected="selected">Semestr 1</option>
-                                <option value="2">Semestr 2</option>
-                                <option value="3">Semestr 3</option>
-                                <option value="4">Semestr 4</option>
-                                <option value="5">Semestr 5</option>
-                                <option value="6">Semestr 6</option>
-                                <option value="7">Semestr 7</option>
-                                <option value="8">Semestr 8</option>
-                                <option value="9">Semestr 9</option>
-                                <option value="10">Semestr 10</option>
-                            </select>
-                        </li>
-                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
-                            <select class="form-control" asp-for="@Model.grupa">
-                                <option value="#">Ktora grupa</option>
-                                <option value="1" selected="selected">Grupa 1</option>
-                                <option value="2">Grupa 2</option>
-                                <option value="3">Grupa 3</option>
-                                <option value="4">Grupa 4</option>
-                                <option value="5">Grupa 5</option>
-                                <option value="6">Grupa 6</option>
-                                <option value="7">Grupa 7</option>
-                                <option value="8">Grupa 8</option>
-                                <option value="9">Grupa 9</option>
-                                <option value="A">Turnus A</option>
-                                <option value="B">Turnus B</option>
-                            </select>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li style="padding-top:1em; padding-right:1em">
-                            <button class="buttonzaladuj">Zaladuj</button>
-                        </li>
-                    </ul>
-                </form>                
-            </div>
-        </div>
-    </nav>
-</div>
-
+@Html.Partial("/Views/Home/PlanZajecNavBar.cshtml", Model)
 @if (Model.grupa == "A" || Model.grupa == "B")
 {
     @Html.Partial("/Views/Home/PlanZajecN.cshtml", Model)
@@ -73,46 +14,3 @@ else
 {
     @Html.Partial("/Views/Home/PlanZajec.cshtml", Model)
 }
-
-
-
-
-@*<div class="row">
-    <div class="col-md-3">
-        <h2>Application uses</h2>
-        <ul>
-            <li>Sample pages using ASP.NET Core MVC</li>
-            <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>How to</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Overview</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Run &amp; Deploy</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-        </ul>
-    </div>
-</div>*@

@@ -11,9 +11,17 @@ namespace SGGWPZ.ViewModels
 {
     public class ViewPlanZajec
     {
+        // Plan Zajec
         public string kierunek { get; set; }
         public string semestr_studiow { get; set; }
         public string grupa { get; set; }
+        // Plan Wykladowcy
+        public string wykladowca { get; set; }
+        public List<Wykladowca> wykladowcy { get; set; }
+        // Plan Sal
+        public string sala { get; set; }
+        public List<Sala> sale { get; set; }
+        // Ogolne
         public string datetimestring { get; set; }
         public DateTime datetime { get; set; }
         public List<string> DataTygodnia { get; set; }
@@ -26,6 +34,9 @@ namespace SGGWPZ.ViewModels
         // Constructor
         public ViewPlanZajec(string _kierunek, string _semestr_studiow, string _grupa)
         { kierunek = _kierunek;   semestr_studiow = _semestr_studiow;     grupa = _grupa; }
+        // Constructor
+        //public ViewPlanZajec(string _wykladowca)
+        //{ wykladowca = _wykladowca; }
 
         public void ZnajdzRezerwacje(IUniversalRepositoryTypeOf uni)
         {
@@ -36,15 +47,33 @@ namespace SGGWPZ.ViewModels
             List<Przedmiot> listaPrzedmiotow = uni.ReadAllT(new Przedmiot());
 
             // Znajdz przedmioty ktore maja ten sam kierunek i semestr studiow
-            int idkierunku = uni.ReadAllT(new Kierunek()).FirstOrDefault(k => k.nazwa_kierunku == kierunek).kierunekId;
+            // int idkierunku = uni.ReadAllT(new Kierunek()).FirstOrDefault(k => k.nazwa_kierunku == kierunek).kierunekId;
 
-            //int idgrupy = uni.ReadAllT(new Grupa()).FirstOrDefault(g => g.grupy == grupa).grupaId; // Nowe na dole
-            List<int> listaidgrupy = uni.ReadAllT(new Grupa()).Where(g => g.grupy.Contains(grupa)).ToList().Select(g => g.grupaId).ToList();
+            //List<int> listaidgrupy = uni.ReadAllT(new Grupa()).Where(g => g.grupy.Contains(grupa)).ToList().Select(g => g.grupaId).ToList();
 
-            listaPrzedmiotow = listaPrzedmiotow.Where(p => p.kierunekId == idkierunku && p.semestr_studiow == semestr_studiow).ToList();
+            // PLAN ZAJEC VS PLAN WYKLADOWCY VS PLAN SAL
+            List<Rezerwacja> Rezerwacje21 = Rezerwacje2;
+            if (wykladowca != null)
+            {
+                int idwykladowcy = uni.ReadAllT(new Wykladowca()).FirstOrDefault(w => w.skrot_wykladowca == wykladowca).wykladowcaId;
+                listaPrzedmiotow = listaPrzedmiotow.Where(p => p.wykladowcaId == idwykladowcy).ToList();
+            }
+            else if (sala != null)
+            {
+                int idsali = uni.ReadAllT(new Sala()).FirstOrDefault(s => s.skrot_informacji == sala).salaId;
+                Rezerwacje21 = Rezerwacje2.Where(r => r.salaId == idsali).ToList();
+            }
+            else
+            {
+                // Znajdz przedmioty ktore maja ten sam kierunek i semestr studiow
+                int idkierunku = uni.ReadAllT(new Kierunek()).FirstOrDefault(k => k.nazwa_kierunku == kierunek).kierunekId;
+                listaPrzedmiotow = listaPrzedmiotow.Where(p => p.kierunekId == idkierunku && p.semestr_studiow == semestr_studiow).ToList();
 
-            //Rezerwacje2 = Rezerwacje2.Where(r => r.grupaId == idgrupy).ToList(); // Nowe na dole
-            List<Rezerwacja> Rezerwacje21 = Rezerwacje2.Where(r => listaidgrupy.Any(gid => gid == r.grupaId)).ToList();        
+                List<int> listaidgrupy = uni.ReadAllT(new Grupa()).Where(g => g.grupy.Contains(grupa)).ToList().Select(g => g.grupaId).ToList();
+                Rezerwacje21 = Rezerwacje2.Where(r => listaidgrupy.Any(gid => gid == r.grupaId)).ToList();
+            }
+
+            //List<Rezerwacja> Rezerwacje21 = Rezerwacje2.Where(r => listaidgrupy.Any(gid => gid == r.grupaId)).ToList();        
 
             foreach (var przedmiot in listaPrzedmiotow)
             { Rezerwacje.AddRange(Rezerwacje21.Where(r => r.przedmiotId == przedmiot.przedmiotId)); } //bylo Rezerwacje2

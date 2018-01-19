@@ -62,6 +62,87 @@ namespace SGGWPZ.Controllers
             return View(viewPlanZajec);
         }
 
+        // Wykladowcy
+
+        public IActionResult Wykladowcy()
+        {
+            ViewPlanZajec vPZ = new ViewPlanZajec();
+            vPZ.wykladowcy = uni.ReadAllT(new Wykladowca());
+            vPZ.wykladowca = vPZ.wykladowcy[0].skrot_wykladowca;
+            vPZ.datetime = DateTime.Now;
+
+            try { vPZ.ZnajdzRezerwacje(uni); }
+            catch (Exception ex) { }
+
+            vPZ.PodzielRezerwacje(uni);
+            vPZ.Uzupelanieniedanych(uni);
+            vPZ.SprawdzDniWolne(uni);
+
+            var test = vPZ.Rezerwacje;
+            return View("PlanWykladowcy",vPZ);
+        }
+
+        [HttpPost]
+        public IActionResult Wykladowcy(ViewPlanZajec viewWykladowcy, int ile, string dt)
+        {
+            viewWykladowcy.wykladowcy = uni.ReadAllT(new Wykladowca());
+            // Przesuniecie daty
+            if (dt != null) { viewWykladowcy.datetime = Convert.ToDateTime(dt).AddDays(ile); }
+            else { viewWykladowcy.datetime = viewWykladowcy.datetime.AddDays(ile); }
+            viewWykladowcy.datetimestring = viewWykladowcy.datetime.ToString();
+
+            try { viewWykladowcy.ZnajdzRezerwacje(uni); }
+            catch (Exception ex) { viewWykladowcy.Rezerwacje = new List<Rezerwacja>(); }
+
+            viewWykladowcy.PodzielRezerwacje(uni);
+            viewWykladowcy.Uzupelanieniedanych(uni);
+            viewWykladowcy.SprawdzDniWolne(uni);
+
+            var test = viewWykladowcy.Rezerwacje;
+
+            return View("PlanWykladowcy", viewWykladowcy);
+        }
+
+        // Sale
+
+        public IActionResult Sale()
+        {
+            ViewPlanZajec vPZ = new ViewPlanZajec();            
+            vPZ.sale = uni.ReadAllT(new Sala());
+            vPZ.sala = vPZ.sale[0].skrot_informacji;
+            vPZ.datetime = DateTime.Now;
+
+            try { vPZ.ZnajdzRezerwacje(uni); }
+            catch (Exception ex) { }
+
+            vPZ.PodzielRezerwacje(uni);
+            vPZ.Uzupelanieniedanych(uni);
+            vPZ.SprawdzDniWolne(uni);
+
+            return View("PlanSal", vPZ);
+        }
+
+        [HttpPost]
+        public IActionResult Sale(ViewPlanZajec viewSale, int ile, string dt)
+        {
+            viewSale.sale = uni.ReadAllT(new Sala());
+            // Przesuniecie daty
+            if (dt != null) { viewSale.datetime = Convert.ToDateTime(dt).AddDays(ile); }
+            else { viewSale.datetime = viewSale.datetime.AddDays(ile); }
+            viewSale.datetimestring = viewSale.datetime.ToString();
+
+            try { viewSale.ZnajdzRezerwacje(uni); }
+            catch (Exception ex) { viewSale.Rezerwacje = new List<Rezerwacja>(); }
+
+            viewSale.PodzielRezerwacje(uni);
+            viewSale.Uzupelanieniedanych(uni);
+            viewSale.SprawdzDniWolne(uni);
+
+            return View("PlanSal", viewSale);
+        }
+
+        // Inne
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";      
@@ -78,6 +159,8 @@ namespace SGGWPZ.Controllers
         {
             return View();//new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // Logowanie
 
         [HttpGet]
         public IActionResult Zaloguj()

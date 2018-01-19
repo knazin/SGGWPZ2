@@ -1,0 +1,32 @@
+﻿@model ViewPlanZajec
+
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-collapse collapse">
+                <form asp-controller="Home" asp-action="Wykladowcy" method="post">
+                    <input type="hidden" asp-for="@Model.datetime" />
+                    <ul class="nav navbar-nav">
+                        <li class="" style="padding-top:1.5em ; padding-bottom:1em; padding-right:1em">
+                            Wybierz wykladowce:
+                        </li>
+                        <li class="" style="padding-top:1em ; padding-bottom:1em; padding-right:1em">
+                            <select class="form-control" asp-for="@Model.wykladowca">
+                                <option value="#">Wybierz wykladowce</option>
+                                @foreach (var wykladowca in Model.wykladowcy)
+                                {
+                                    <option value="@wykladowca.skrot_wykladowca">@wykladowca.skrot_wykladowca</option>
+                                }
+                            </select>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="padding-top:1em; padding-right:1em">
+                            <button class="buttonzaladuj">Zaladuj</button>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </nav>
+</div>

@@ -1,0 +1,77 @@
+﻿@model ViewPlanZajec
+
+@Html.Partial("/Views/Home/PlanWykladowcyNavBar.cshtml", Model)
+
+@{
+    ViewData["Title"] = "PlanWykladowcy";
+    //List<string> listadni = new List<string>() { "Poniedzialek", "Wtorek", "Sroda", "Czwartek", "Piatek" };
+
+    //int liczbazajec = 2;
+    List<List<Dictionary<string, string>>> RezerwacjeDniaDanePnPt = Model.RezerwacjeDniaDane.ToList();//.SkipLast(2).ToList();
+
+    string asd = "cp";
+}
+
+<h2 style="text-align: center;">Plan Wykladowcy</h2>
+<br />
+
+<div class="containerplan">
+    <div id="dnityg">
+        <div class="">
+            <form asp-controller="Home" asp-action="Wykladowcy" method="post">
+                @*<input type="hidden" asp-for="@Model.kierunek" />
+                <input type="hidden" asp-for="@Model.semestr_studiow" />
+                <input type="hidden" asp-for="@Model.grupa" />*@
+                <input type="hidden" asp-for="@Model.wykladowca" />
+                <input type="hidden" asp-for="@Model.datetime" />
+                <input type="hidden" asp-for="@Model.datetimestring" />
+                <input style="width: 70px; margin-bottom: 4px;" type="submit" class="btn btn-default" value=">" asp-route-ile="7" asp-route-dt="@Model.datetimestring" />
+                <input style="width: 70px;" type="submit" class="btn btn-default" value="<" asp-route-ile="-7" asp-route-dt="@Model.datetimestring" />
+            </form>
+        </div>
+        <div class="dzien"><p>Poniedzialek</p><span class="godzina">@Model.DataTygodnia[0].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Wtorek</p> <span class="godzina">@Model.DataTygodnia[1].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Sroda</p> <span class="godzina">@Model.DataTygodnia[2].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Czwartek</p> <span class="godzina">@Model.DataTygodnia[3].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Piatek</p> <span class="godzina">@Model.DataTygodnia[4].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Sobota</p> <span class="godzina">@Model.DataTygodnia[5].Split(" ")[0]</span></div>
+        <div class="dzien"><p>Niedziela</p> <span class="godzina">@Model.DataTygodnia[6].Split(" ")[0]</span></div>
+    </div>
+
+    <div id="planwykladowcy">
+        <div>
+            @for (DateTime dt = new DateTime(2017, 1, 1, 8, 0, 0); dt.Hour < 22; dt = dt.AddMinutes(15))
+            {
+                <div class="godzina">
+                    @{
+                        if (dt.Minute == 0)
+                        { <p>@dt.Hour:00</p> }
+                    else
+                    { <p>@dt.Hour:@dt.Minute</p> } }
+                </div>
+            }
+        </div>
+        @foreach (var RezerwacjeDnia in RezerwacjeDniaDanePnPt)
+        {
+            <div id="poniedzialek">
+                @foreach (var item in RezerwacjeDnia)
+                {
+                    if (item["nazwa"] != "Przerwa")
+                    {
+                        <div role="button" class="@asd" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">
+                            <div id="trwanie" style="color:@item["tekst"]">
+                                @item["od_ktorej_godziny"]-@item["do_ktorej_godziny"] @item["rodzaj_zajec"]
+                            </div>
+                            <b>@item["nazwa"]</b>
+                        </div>
+
+                    }
+                    else if (item["wysokosc"] == "0px") { }
+                    else
+                    {<div role="button" class="" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]"></div>}
+                }
+            </div>
+        }
+    </div>
+
+</div>
