@@ -22,16 +22,6 @@ namespace SGGWPZ.Models
         public string rodzaj_przedmiotu { get; set; }
         public string rodzaj_zajec { get; set; }
         public int czas_trwania { get; set; } // minuty
-        //public int czastrwaniaId { get; set; }
-        //public int kierunekId { get; set; }
-        //public int grupaId { get; set; }
-        //public int rodzajprzedmiotuId { get; set; }
-        //public int rodzajstudiowId { get; set; }
-        //public int rodzajzajecId { get; set; }
-        //public int rokstudiowId { get; set; }
-        //public int semestrId { get; set; }
-        //public int semestrstudiowId { get; set; }
-        //public int stopienstudiowId { get; set; }
 
     }
 }

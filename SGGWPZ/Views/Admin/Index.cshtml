@@ -1,7 +1,5 @@
 ﻿@model ViewLista
 
-@*IEnumerable<SGGWPZ.Models.Wykladowcy>*@
-
 @{
     ViewData["Title"] = "View";
 }
@@ -43,7 +41,6 @@
             }
             <td>
                 <a class="btn btn-primary" asp-action="Update" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Update</a>
-                @*<a asp-action="Details" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Details</a> |*@
                 <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.GetType().GetProperties()[0].GetValue(item)" asp-route-co="@Model.Nazwa">Delete</a>
             </td>
         </tr>

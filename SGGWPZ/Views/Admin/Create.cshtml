@@ -19,7 +19,7 @@
     <div class="col-md-4">
         <form asp-controller="Admin" asp-action="Create" method="post">
             <input type="hidden" asp-for="@Model.Nazwa" />
-            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @{
                 int ktoryslownik = 0;
                 for (int i = 0; i < Model.Naglowki.Count; i++)
@@ -47,7 +47,6 @@
                                 <label class="control-label">@Model.Naglowki[i]</label>
                                 <input asp-for="@Model.Naglowki[i]" class="form-control" type="hidden" />
                                 <input asp-for="@Model.Wartosci[i]" class="form-control" />
-                                @*<span asp-validation-for="nazwisko" class="text-danger"></span>*@
                             </div>
                         }
                     }

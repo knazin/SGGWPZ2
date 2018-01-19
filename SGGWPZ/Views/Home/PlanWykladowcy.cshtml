@@ -4,12 +4,8 @@
 
 @{
     ViewData["Title"] = "PlanWykladowcy";
-    //List<string> listadni = new List<string>() { "Poniedzialek", "Wtorek", "Sroda", "Czwartek", "Piatek" };
-
-    //int liczbazajec = 2;
     List<List<Dictionary<string, string>>> RezerwacjeDniaDanePnPt = Model.RezerwacjeDniaDane.ToList();//.SkipLast(2).ToList();
 
-    string asd = "cp";
 }
 
 <h2 style="text-align: center;">Plan Wykladowcy</h2>
@@ -19,9 +15,6 @@
     <div id="dnityg">
         <div class="">
             <form asp-controller="Home" asp-action="Wykladowcy" method="post">
-                @*<input type="hidden" asp-for="@Model.kierunek" />
-                <input type="hidden" asp-for="@Model.semestr_studiow" />
-                <input type="hidden" asp-for="@Model.grupa" />*@
                 <input type="hidden" asp-for="@Model.wykladowca" />
                 <input type="hidden" asp-for="@Model.datetime" />
                 <input type="hidden" asp-for="@Model.datetimestring" />
@@ -58,13 +51,12 @@
                 {
                     if (item["nazwa"] != "Przerwa")
                     {
-                        <div role="button" class="@asd" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">
+                        <div role="button" class="cp" style="height:@item["wysokosc"]; background-color:@item["tlo"]; color:@item["tekst"]" data-toggle="popover" data-placement="top" data-content="@item["info"]">
                             <div id="trwanie" style="color:@item["tekst"]">
                                 @item["od_ktorej_godziny"]-@item["do_ktorej_godziny"] @item["rodzaj_zajec"]
                             </div>
                             <b>@item["nazwa"]</b>
                         </div>
-
                     }
                     else if (item["wysokosc"] == "0px") { }
                     else
@@ -73,5 +65,4 @@
             </div>
         }
     </div>
-
 </div>

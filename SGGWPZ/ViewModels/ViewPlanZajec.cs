@@ -34,10 +34,16 @@ namespace SGGWPZ.ViewModels
         // Constructor
         public ViewPlanZajec(string _kierunek, string _semestr_studiow, string _grupa)
         { kierunek = _kierunek;   semestr_studiow = _semestr_studiow;     grupa = _grupa; }
-        // Constructor
-        //public ViewPlanZajec(string _wykladowca)
-        //{ wykladowca = _wykladowca; }
 
+        /// <summary>
+        /// Metoda szukajaca rezerwacji dla:
+        /// Wybranego wykladowcy,
+        /// Wybranej sali,
+        /// Wybranej grupy studenckiej (dla odpowiedniego kierunku i semestru)
+        /// </summary>
+        /// <typeparam name="IUniversalRepositoryTypeOf">Interfejs dla klasy obslugujacej komunikacje z baza danych</typeparam>
+        /// <param name="uni">Jako parametr wchodzi obiekt klasy obslugujacy komunikacje z baza danych</param>
+        /// <returns>Uzupelnia wlasciwosc klasy</returns>
         public void ZnajdzRezerwacje(IUniversalRepositoryTypeOf uni)
         {
             var obiekt = uni.Obiekt("Rezerwacja");
@@ -46,24 +52,19 @@ namespace SGGWPZ.ViewModels
             List<Rezerwacja> Rezerwacje2 = uni.ReadAllT(new Rezerwacja());
             List<Przedmiot> listaPrzedmiotow = uni.ReadAllT(new Przedmiot());
 
-            // Znajdz przedmioty ktore maja ten sam kierunek i semestr studiow
-            // int idkierunku = uni.ReadAllT(new Kierunek()).FirstOrDefault(k => k.nazwa_kierunku == kierunek).kierunekId;
-
-            //List<int> listaidgrupy = uni.ReadAllT(new Grupa()).Where(g => g.grupy.Contains(grupa)).ToList().Select(g => g.grupaId).ToList();
-
             // PLAN ZAJEC VS PLAN WYKLADOWCY VS PLAN SAL
             List<Rezerwacja> Rezerwacje21 = Rezerwacje2;
-            if (wykladowca != null)
+            if (wykladowca != null) // Plan Wykladowcy
             {
                 int idwykladowcy = uni.ReadAllT(new Wykladowca()).FirstOrDefault(w => w.skrot_wykladowca == wykladowca).wykladowcaId;
                 listaPrzedmiotow = listaPrzedmiotow.Where(p => p.wykladowcaId == idwykladowcy).ToList();
             }
-            else if (sala != null)
+            else if (sala != null) // Plan Sal
             {
                 int idsali = uni.ReadAllT(new Sala()).FirstOrDefault(s => s.skrot_informacji == sala).salaId;
                 Rezerwacje21 = Rezerwacje2.Where(r => r.salaId == idsali).ToList();
             }
-            else
+            else // Plan Zajec
             {
                 // Znajdz przedmioty ktore maja ten sam kierunek i semestr studiow
                 int idkierunku = uni.ReadAllT(new Kierunek()).FirstOrDefault(k => k.nazwa_kierunku == kierunek).kierunekId;
@@ -71,14 +72,18 @@ namespace SGGWPZ.ViewModels
 
                 List<int> listaidgrupy = uni.ReadAllT(new Grupa()).Where(g => g.grupy.Contains(grupa)).ToList().Select(g => g.grupaId).ToList();
                 Rezerwacje21 = Rezerwacje2.Where(r => listaidgrupy.Any(gid => gid == r.grupaId)).ToList();
-            }
-
-            //List<Rezerwacja> Rezerwacje21 = Rezerwacje2.Where(r => listaidgrupy.Any(gid => gid == r.grupaId)).ToList();        
+            }    
 
             foreach (var przedmiot in listaPrzedmiotow)
             { Rezerwacje.AddRange(Rezerwacje21.Where(r => r.przedmiotId == przedmiot.przedmiotId)); } //bylo Rezerwacje2
         }
 
+        /// <summary>
+        /// Metoda rozdzielajaca rezerwacje do odpowiednich dni tygodnia
+        /// </summary>
+        /// <typeparam name="IUniversalRepositoryTypeOf">Interfejs dla klasy obslugujacej komunikacje z baza danych</typeparam>
+        /// <param name="uni">Jako parametr wchodzi obiekt klasy obslugujacy komunikacje z baza danych</param>
+        /// <returns>Uzupelnia wlasciwosc klasy</returns>
         public void PodzielRezerwacje(IUniversalRepositoryTypeOf uni)
         {
             //var asd = CultureInfo.InvariantCulture.Calendar;
@@ -92,7 +97,6 @@ namespace SGGWPZ.ViewModels
             for (DayOfWeek i = DayOfWeek.Monday; i <= DayOfWeek.Saturday+1; i++)
             { DataTygodnia.Add(datetime.AddDays(i - datetime.DayOfWeek).Date.ToString("d",culture)); }
             
-
             // Wszystkie aktualne rezerwacje
             List<Cyklicznosc> aktualnecyklicznosci = uni.ReadAllT(new Cyklicznosc()).Where(c =>
                DateTime.Compare(Convert.ToDateTime(c.od_ktorego_dnia, culture).AddDays(-1), datetime) < 0 && // -1 bo tydzien zaczyna sie od Niedzieli (czyli pon musi porownac do poprzedniej niedzieli)
@@ -113,10 +117,6 @@ namespace SGGWPZ.ViewModels
                 else { aktualnecyklicznosc2.Add(item); }
             }
             aktualnecyklicznosci = aktualnecyklicznosc2;
-
-            //for (DayOfWeek i = DayOfWeek.Monday; i <= DayOfWeek.Saturday; i++)
-            //{ listaCyklId.Add(aktualnecyklicznosci.Where(r => Convert.ToDateTime(r.od_ktorego_dnia, culture).DayOfWeek == i).ToList()); }
-            //listaCyklId.Add(aktualnecyklicznosci.Where(r => Convert.ToDateTime(r.od_ktorego_dnia, culture).DayOfWeek == DayOfWeek.Sunday).ToList());
 
             for (DayOfWeek i = DayOfWeek.Monday; i <= DayOfWeek.Saturday; i++)
             { listaCyklId.Add(aktualnecyklicznosci.Where(r => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), r.dzien_tygodnia) == i).ToList()); }
@@ -141,11 +141,16 @@ namespace SGGWPZ.ViewModels
             }
         }
 
+        /// <summary>
+        /// Metoda pobiera szczegolowe informacje o wyselekcjonowanych wczesniej rezerwacjach.
+        /// Uwzglednia rowniez dodawanie przerw pomiedzy rezerwacjami
+        /// </summary>
+        /// <typeparam name="IUniversalRepositoryTypeOf">Interfejs dla klasy obslugujacej komunikacje z baza danych</typeparam>
+        /// <param name="uni">Jako parametr wchodzi obiekt klasy obslugujacy komunikacje z baza danych</param>
+        /// <returns>Uzupelnia wlasciwosc klasy</returns>
         public void Uzupelanieniedanych(IUniversalRepositoryTypeOf uni)
         {
             RezerwacjeDniaDane = new List<List<Dictionary<string, string>>>();
-
-            
 
             foreach (var rezerwacje in RezerwacjeDnia)
             {
@@ -211,7 +216,7 @@ namespace SGGWPZ.ViewModels
                     dictionary.Add("wysokosc", wys);
 
                     // Do godziny
-                    var do_ktorej = Convert.ToDateTime(dictionary["od_ktorej_godziny"]).AddMinutes(Convert.ToInt32(dictionary["czas_trwania"])).ToShortTimeString().Split(" ")[0];
+                    var do_ktorej = Convert.ToDateTime(dictionary["od_ktorej_godziny"]).AddMinutes(Convert.ToInt32(dictionary["czas_trwania"])).ToString("HH:mm");
                     dictionary.Add("do_ktorej_godziny",do_ktorej);
 
                     // Kolor tla
@@ -220,6 +225,7 @@ namespace SGGWPZ.ViewModels
                     // Kolor tekstu
                     dictionary.Add("tekst", "white");
 
+                    // Tabela z informacjami
                     string info = String.Format("<table style='border: solid 1px #e2e2e2'>" +
                         $"<tr style='border: solid 1px #e2e2e2'><td style='padding: 3px'>Nazwa przedmiotu</td><td style='padding: 3px'>{dictionary["nazwa"]}</td></tr>" +
                         $"<tr style='border: solid 1px #e2e2e2'><td style='padding: 3px'>Czas rozpoczecia:</td><td style='padding: 3px'>{dictionary["od_ktorej_godziny"]}</td></tr>" +
@@ -244,7 +250,6 @@ namespace SGGWPZ.ViewModels
 
                         foreach (var prop in cykl2.GetType().GetProperties())
                         { dictionary2.Add(prop.Name, cykl2.GetType().GetProperty(prop.Name).GetValue(cykl2).ToString()); }
-
 
                         // Nazwa bloku
                         dictionary2.Add("nazwa", "Przerwa");
@@ -278,12 +283,17 @@ namespace SGGWPZ.ViewModels
 
                         DaneDnia.Add(dictionary2);
                     }
-
                 }
                 RezerwacjeDniaDane.Add(DaneDnia);
             }
         }
 
+        /// <summary>
+        /// Metoda sprawdza czy w danym tygodniu sa dni wolne. Jesli tak to nadpisuje rezerwacje dla wolnego dnia.
+        /// </summary>
+        /// <typeparam name="IUniversalRepositoryTypeOf">Interfejs dla klasy obslugujacej komunikacje z baza danych</typeparam>
+        /// <param name="uni">Jako parametr wchodzi obiekt klasy obslugujacy komunikacje z baza danych</param>
+        /// <returns>Uzupelnia wlasciwosc klasy</returns>
         public void SprawdzDniWolne(IUniversalRepositoryTypeOf uni)
         {
             CultureInfo culture = new CultureInfo("pt-BR"); // dzien/miesiac/rok
@@ -342,11 +352,6 @@ namespace SGGWPZ.ViewModels
             }
 
             RezerwacjeDniaDane = RezerwacjeDniaDane2;
-
-            string stop = "";
-
-
-
         }
     }    
 }

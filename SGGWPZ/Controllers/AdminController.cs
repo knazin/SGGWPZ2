@@ -85,8 +85,6 @@ namespace SGGWPZ.Controllers
 
                             foreach (var item2 in Db.GetType().GetProperties())
                             {
-                                //if (item.Name.ToLower().Substring(0, 3) == item2.Name.ToLower().Substring(0, 3))
-                                //{ nazwa = item2.Name; }
                                 if (item2.Name.ToLower().Replace("_", "").Contains(item.Name.Split("I")[0].ToLower()))
                                 { nazwa = item2.Name; }
                             }
@@ -95,7 +93,6 @@ namespace SGGWPZ.Controllers
                             Dictionary<string, string> listanazw = new Dictionary<string, string>();
                             if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka" && nazwa == "Uzytkownik")
                             {
-                                //List<dynamic> lista2 = lista.ToList();
                                 var kto = lista.ToList().FirstOrDefault(u => u.login == HttpContext.Session.GetString("login"));
                                 string key = Convert.ToString(kto.GetType().GetProperty("login").GetValue(kto));
                                 listanazw[key] = Convert.ToString(kto.GetType().GetProperty("uzytkownikId").GetValue(kto));
@@ -225,16 +222,11 @@ namespace SGGWPZ.Controllers
                 try
                 {
                     Obiekt = uni.Obiekt(co);
-                    //var klucze = uni.PartsOfPrimaryKey(Obiekt);
                     var Item = uni.ReadTAsync(id, Obiekt).Result;
                     List<string> wartosci = new List<string>();
                     //ListaKluczyObcych = new List<string>();
                     List<string> Naglowki = new List<string>(); // Konstruktor
                     List<Dictionary<string, string>> ListaListNazw = new List<Dictionary<string, string>>();
-
-                    //IEnumerable<IForeignKey> foreignKeys = Db.Model.FindEntityType($"SGGWPZ.Models.{co}").GetForeignKeys();
-                    //foreach (var foreignKey in foreignKeys)
-                    //    ListaKluczyObcych.Add(foreignKey.PrincipalKey.ToString().Split(' ')[1].Split("PK")[0]);
 
                     List<string> ListaKluczy = uni.PartsOfAlternativeKey(Obiekt);
 
@@ -247,8 +239,6 @@ namespace SGGWPZ.Controllers
 
                             foreach (var item2 in Db.GetType().GetProperties())
                             {
-                                //if (item.Name.ToLower().Substring(0, 3) == item2.Name.ToLower().Substring(0, 3))
-                                //{ nazwa = item2.Name; }
                                 if (item2.Name.ToLower().Replace("_", "").Contains(item.Name.Split("I")[0].ToLower()))
                                 { nazwa = item2.Name; }
                             }
@@ -315,7 +305,6 @@ namespace SGGWPZ.Controllers
                     //Message = "Obiekt zostal zedytowany";
                     var Obiekt = uni.Obiekt(item.Nazwa);
                     int Id = Convert.ToInt32(item.Wartosci[0]);
-                    //ListaKluczy = uni.PartsOfPrimaryKey(Obiekt);
 
                     for (int a = 0; a < Obiekt.GetType().GetProperties().Length; a++)
                     {
