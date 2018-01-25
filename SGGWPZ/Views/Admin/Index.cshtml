@@ -9,6 +9,9 @@
 @{
     // Wyswietl komunikat o bledzie jesli wystapi
     if (Model.ErrorMessage != null) { <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div> }
+    // Wyswietl jesli wystapi akcja
+    if (Model.ActionInfo != null)
+    { <div class="alert alert-success" role="alert">@Model.ActionInfo</div> }
 }
 
 <p>

@@ -12,6 +12,7 @@
     // Wyswietl komunikat o bledzie jesli wystapi
     if (Model.ErrorMessage != null)
     { <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div> }
+    
 }
 
 <hr />
@@ -25,9 +26,9 @@
                 for (int i = 0; i < Model.Naglowki.Count; i++)
                 {
                     if (i == 0) // Ukryj reczne dodanie id
-                    { 
+                    {
                         <input type="hidden" asp-for="@Model.Naglowki[i]" />
-                        <input type="hidden" asp-for="@Model.Wartosci[i]"/>
+                        <input type="hidden" asp-for="@Model.Wartosci[i]" />
                     }
                     else
                     {
@@ -37,7 +38,8 @@
                             <input type="hidden" asp-for="@Model.Naglowki[i]" />
                             <select class="form-control" asp-for="@Model.Wartosci[i]">
                                 @foreach (KeyValuePair<string, string> item2 in Model.ListaNazwKluczyObcych[ktoryslownik])
-                                { <option value="@item2.Value">@item2.Key</option> }
+                                {
+                                    <option value="@item2.Value">@item2.Key</option>}
                             </select>
                             ktoryslownik++;
                         }

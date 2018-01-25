@@ -9,6 +9,7 @@ namespace SGGWPZ.ViewModels
     {
         public string Nazwa;
         public string ErrorMessage;
+        public string ActionInfo;
         public List<string> Naglowki;
         public List<string> Wartosci;
         public IEnumerable<dynamic> Obiekty;
@@ -35,12 +36,21 @@ namespace SGGWPZ.ViewModels
             Obiekty = obiekty;
             ErrorMessage = errormessage;
         }
+
+        public ViewLista(List<string> naglowki, IEnumerable<dynamic> obiekty, string nazwa, string errormessage, string actioninfo)
+        {
+            Nazwa = nazwa;
+            Naglowki = naglowki;
+            Obiekty = obiekty;
+            ActionInfo = actioninfo;
+        }
     }
 
     public class ViewItem
     {
         public string Nazwa { get; set; }
         public string ErrorMessage { get; set; }
+        public string ActionInfo { get; set; }
         public List<string> Naglowki { get; set; }
         public List<string> Wartosci { get; set; }
         public List<Dictionary<string, string>> ListaNazwKluczyObcych { get; set; }

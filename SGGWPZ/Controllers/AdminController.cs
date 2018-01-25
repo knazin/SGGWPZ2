@@ -196,7 +196,7 @@ namespace SGGWPZ.Controllers
                     if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka") // Jezeli zalogowala sie sekretarka to wybieramy tylko jej rezerwacje
                     { lista2 = lista2.FindAll(r => r.GetType().GetProperty("uzytkownikId").GetValue(r) == Convert.ToInt32(HttpContext.Session.GetString("uzytkownikId"))); }
 
-                    return View("Index", new ViewLista(item.Naglowki, lista2, item.Nazwa));
+                    return View("Index", new ViewLista(item.Naglowki, lista2, item.Nazwa, null, $"Dodano rekord {item.Nazwa}"));
                 }
                 catch (Exception ex)
                 {
@@ -354,7 +354,7 @@ namespace SGGWPZ.Controllers
                     if (HttpContext.Session.GetString("rodzaj_konta") == "Sekretarka") // Jezeli zalogowala sie sekretarka to wybieramy tylko jej rezerwacje
                     { lista2 = lista2.FindAll(r => r.GetType().GetProperty("uzytkownikId").GetValue(r) == Convert.ToInt32(HttpContext.Session.GetString("uzytkownikId"))); }
 
-                    return View("Index", new ViewLista(item.Naglowki, lista2, item.Nazwa));
+                    return View("Index", new ViewLista(item.Naglowki, lista2, item.Nazwa, null, $"Zedytowano rekord o Id {Id}"));
                 }
                 catch (Exception ex)
                 {
