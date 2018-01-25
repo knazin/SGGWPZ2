@@ -21,7 +21,6 @@ namespace SGGWPZ
             {
                 client.Database.EnsureCreated();
 
-                
                 try
                 {
                     Rodzaj_uzytkownika rodzaj_Uzytkownika = new Rodzaj_uzytkownika();
@@ -48,7 +47,7 @@ namespace SGGWPZ
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-            .AddSessionStateTempDataProvider();
+              .AddSessionStateTempDataProvider();
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddEntityFrameworkSqlite().AddDbContext<PlanContext>();

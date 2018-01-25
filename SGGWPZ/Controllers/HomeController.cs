@@ -24,22 +24,32 @@ namespace SGGWPZ.Controllers
         }
 
         public IActionResult Index()
-        {
-            ViewPlanZajec vPZ = new ViewPlanZajec();
-            vPZ.kierunek = "Informatyka";
-            vPZ.semestr_studiow = "1";
-            vPZ.grupa = "1";
-            vPZ.datetime = DateTime.Now;
+        {           
+            try
+            {
+                ViewPlanZajec vPZ = new ViewPlanZajec
+                {
+                    kierunek = "Informatyka",
+                    semestr_studiow = "1",
+                    grupa = "1",
+                    datetime = DateTime.Now
+                };
 
-            try { vPZ.ZnajdzRezerwacje(uni); }
-            catch (Exception ex) { }
-            
-            vPZ.PodzielRezerwacje(uni);
-            vPZ.Uzupelanieniedanych(uni);
-            vPZ.SprawdzDniWolne(uni);
+                try { vPZ.ZnajdzRezerwacje(uni); }
+                catch (Exception) { }
 
-            var test = vPZ.Rezerwacje;
-            return View(vPZ);
+                vPZ.PodzielRezerwacje(uni);
+                vPZ.Uzupelanieniedanych(uni);
+                vPZ.SprawdzDniWolne(uni);
+
+                var test = vPZ.Rezerwacje;
+                return View(vPZ);
+            }
+            catch (Exception ex)
+            {
+                ViewData["Error"] = ex.Message.ToString();
+                return View("Error");
+            }
         }
 
         [HttpPost]
@@ -51,7 +61,7 @@ namespace SGGWPZ.Controllers
             viewPlanZajec.datetimestring = viewPlanZajec.datetime.ToString();
 
             try { viewPlanZajec.ZnajdzRezerwacje(uni); }
-            catch (Exception ex) { viewPlanZajec.Rezerwacje = new List<Rezerwacja>(); }
+            catch (Exception) { viewPlanZajec.Rezerwacje = new List<Rezerwacja>(); }
 
             viewPlanZajec.PodzielRezerwacje(uni);
             viewPlanZajec.Uzupelanieniedanych(uni);
@@ -66,13 +76,15 @@ namespace SGGWPZ.Controllers
 
         public IActionResult Wykladowcy()
         {
-            ViewPlanZajec vPZ = new ViewPlanZajec();
-            vPZ.wykladowcy = uni.ReadAllT(new Wykladowca());
+            ViewPlanZajec vPZ = new ViewPlanZajec
+            {
+                wykladowcy = uni.ReadAllT(new Wykladowca()),
+                datetime = DateTime.Now
+            };
             vPZ.wykladowca = vPZ.wykladowcy[0].skrot_wykladowca;
-            vPZ.datetime = DateTime.Now;
 
             try { vPZ.ZnajdzRezerwacje(uni); }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             vPZ.PodzielRezerwacje(uni);
             vPZ.Uzupelanieniedanych(uni);
@@ -92,7 +104,7 @@ namespace SGGWPZ.Controllers
             viewWykladowcy.datetimestring = viewWykladowcy.datetime.ToString();
 
             try { viewWykladowcy.ZnajdzRezerwacje(uni); }
-            catch (Exception ex) { viewWykladowcy.Rezerwacje = new List<Rezerwacja>(); }
+            catch (Exception) { viewWykladowcy.Rezerwacje = new List<Rezerwacja>(); }
 
             viewWykladowcy.PodzielRezerwacje(uni);
             viewWykladowcy.Uzupelanieniedanych(uni);
@@ -107,13 +119,15 @@ namespace SGGWPZ.Controllers
 
         public IActionResult Sale()
         {
-            ViewPlanZajec vPZ = new ViewPlanZajec();            
-            vPZ.sale = uni.ReadAllT(new Sala());
+            ViewPlanZajec vPZ = new ViewPlanZajec
+            {
+                sale = uni.ReadAllT(new Sala()),
+                datetime = DateTime.Now
+            };
             vPZ.sala = vPZ.sale[0].skrot_informacji;
-            vPZ.datetime = DateTime.Now;
 
             try { vPZ.ZnajdzRezerwacje(uni); }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             vPZ.PodzielRezerwacje(uni);
             vPZ.Uzupelanieniedanych(uni);
@@ -132,7 +146,7 @@ namespace SGGWPZ.Controllers
             viewSale.datetimestring = viewSale.datetime.ToString();
 
             try { viewSale.ZnajdzRezerwacje(uni); }
-            catch (Exception ex) { viewSale.Rezerwacje = new List<Rezerwacja>(); }
+            catch (Exception) { viewSale.Rezerwacje = new List<Rezerwacja>(); }
 
             viewSale.PodzielRezerwacje(uni);
             viewSale.Uzupelanieniedanych(uni);

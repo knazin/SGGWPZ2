@@ -34,6 +34,7 @@ namespace SGGWPZ.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Filename=C:\\Users\\Kac\\source\\repos\\SGGWPZ2\\planzajec2.db");
+            //optionsBuilder.UseSqlite("Filename=C:\\inetpub\\AspNetCoreWebApps\\app\\planzajec2.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
